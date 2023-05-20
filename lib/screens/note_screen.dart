@@ -9,7 +9,7 @@ import '../services/database_helper.dart';
 class NoteScreen extends StatefulWidget {
   final Note? note;
 
-  const NoteScreen({Key? key, this.note}) : super(key: key);
+    NoteScreen({Key? key, this.note}) : super(key: key);
 
   @override
   State<NoteScreen> createState() => _NoteScreenState();
@@ -26,12 +26,27 @@ class _NoteScreenState extends State<NoteScreen> {
   GlobalController globalController = Get.put(GlobalController());
 
 
+
+  @override
+  void initState() {
+    super.initState();
+    setData();
+  }
+
+  setData(){
+    if(widget.note != null){
+      titleController.text = widget.note!.title;
+      habitsController.text = widget.note!.habits;
+      addressController.text = widget.note!.address;
+      descriptionController.text = widget.note!.description;
+    }
+  }
+
   bool validateFields() {
     final title = titleController.text;
     final description = descriptionController.text;
     final habits = habitsController.text;
     final address = addressController.text;
-
     if (title.isEmpty || description.isEmpty || habits.isEmpty || address.isEmpty) {
       return false;
     }
@@ -40,6 +55,7 @@ class _NoteScreenState extends State<NoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.note == null ? 'Add a note' : 'Edit note'), centerTitle: true),
       body: Padding(
@@ -84,9 +100,16 @@ class _NoteScreenState extends State<NoteScreen> {
                       });
                       if (widget.note == null) {
                         await globalController.setTitleName(titleName: title);
+
                         await DatabaseHelper.addNote(model);
+                        setState(() {
+
+                        });
                       } else {
                         await DatabaseHelper.updateNote(model);
+                        setState(() {
+
+                        });
                       }
                       titleController.clear();
                       descriptionController.clear();

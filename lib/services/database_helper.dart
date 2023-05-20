@@ -38,17 +38,6 @@ class DatabaseHelper {
       whereArgs: [note.id],
     );
   }
-
-  // static Future<List<Note>?> getAllNotes() async {
-  //   final db = await _getDB();
-  //
-  //   final List<Map<String, dynamic>> maps = await db.query("Note");
-  //
-  //   if (maps.isEmpty) {
-  //     return null;
-  //   }
-  //   return List.generate(maps.length, (index) => Note.fromJson(maps[index]));
-  // }
     Future<List<Note>?> getAllNotes() async {
     final db = await _getDB();
 
@@ -65,23 +54,6 @@ class DatabaseHelper {
       return List.generate(maps.length, (index) => Note.fromJson(maps[index]));
   }
 
-/*  static Future<List<Note>?> getAllNotes({String? searchQuery}) async {
-    final db = await _getDB();
-
-    String query = "SELECT * FROM Note";
-
-    if (searchQuery != null && searchQuery.isNotEmpty) {
-      query += " WHERE title LIKE '%$searchQuery%'";
-    }
-
-    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
-
-    if (maps.isEmpty) {
-      return null;
-    }
-
-    return List.generate(maps.length, (index) => Note.fromJson(maps[index]));
-  }*/
 
 
 }
