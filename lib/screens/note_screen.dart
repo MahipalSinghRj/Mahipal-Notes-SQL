@@ -9,7 +9,7 @@ import '../services/database_helper.dart';
 class NoteScreen extends StatefulWidget {
   final Note? note;
 
-    NoteScreen({Key? key, this.note}) : super(key: key);
+   const NoteScreen({Key? key, this.note}) : super(key: key);
 
   @override
   State<NoteScreen> createState() => _NoteScreenState();
@@ -24,8 +24,6 @@ class _NoteScreenState extends State<NoteScreen> {
   String titleName = '';
   bool isBool=true;
   GlobalController globalController = Get.put(GlobalController());
-
-
 
   @override
   void initState() {
@@ -100,16 +98,11 @@ class _NoteScreenState extends State<NoteScreen> {
                       });
                       if (widget.note == null) {
                         await globalController.setTitleName(titleName: title);
-
                         await DatabaseHelper.addNote(model);
-                        setState(() {
-
-                        });
+                        setState(() {});
                       } else {
                         await DatabaseHelper.updateNote(model);
-                        setState(() {
-
-                        });
+                        setState(() {});
                       }
                       titleController.clear();
                       descriptionController.clear();

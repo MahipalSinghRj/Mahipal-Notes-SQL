@@ -1,53 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:sql_notes/screens/search_screen.dart';
 import '../HelperWidgets/HelperWidgets.dart';
 import '../models/note_model.dart';
 import '../services/database_helper.dart';
 import '../widgets/note_widget.dart';
 import 'note_screen.dart';
 
-class NotesScreen extends StatefulWidget {
-  const NotesScreen({Key? key}) : super(key: key);
+class SearchNotes extends StatefulWidget {
+  const SearchNotes({Key? key}) : super(key: key);
 
   @override
-  State<NotesScreen> createState() => _NotesScreenState();
+  State<SearchNotes> createState() => _SearchNotesState();
 }
 
-class _NotesScreenState extends State<NotesScreen> {
-  final searchController = TextEditingController();
-  List<Note> getAllNotes = [];
-  List<Note> searchList = [];
+class _SearchNotesState extends State<SearchNotes> {
+  final searchNotesController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchAllNotes();
-  }
-
-  Future<void> fetchAllNotes() async {
-    getAllNotes = (await DatabaseHelper().getAllNotes())!;
-    searchList = getAllNotes;
-  }
-
-  void runFilter(String enteredKeyword) {
-    if (enteredKeyword.isEmpty) {
-      setState(() {
-        searchList = getAllNotes;
-      });
-    } else {
-      final results = getAllNotes.where((item) {
-        final titleMatch = item.title.toLowerCase().contains(enteredKeyword.toLowerCase());
-        final habitsMatch = item.habits.toLowerCase().contains(enteredKeyword.toLowerCase());
-        final descriptionMatch = item.description.toLowerCase().contains(enteredKeyword.toLowerCase());
-        final addressMatch = item.address.toLowerCase().contains(enteredKeyword.toLowerCase());
-
-        return titleMatch || habitsMatch || descriptionMatch || addressMatch;
-      }).toList();
-
-      setState(() {
-        searchList = results;
-      });
-    }
   }
 
   @override
@@ -55,33 +25,27 @@ class _NotesScreenState extends State<NotesScreen> {
     return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
-          title: const Text('Mahipal Notes'),
+          title: const Text('Search Notes'),
           centerTitle: true,
-          leading: const Icon(Icons.menu),
-          actions: [GestureDetector(onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (builder)=>const SearchNotes()));
-          }, child: const Icon(Icons.search)), const SizedBox(width: 20)],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await Navigator.push(context, MaterialPageRoute(builder: (context) => NoteScreen()));
-            setState(() {});
-          },
-          child: const Icon(Icons.add),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_outlined),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+
         ),
         body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
-              child: HelperWidgets().textFormFieldWithSearch(searchController, 1, "Type here", "Search Fields", (value) {
-                setState(() {
-                  runFilter(value);
-                });
+              child: HelperWidgets().textFormFieldWithSearch(searchNotesController, 1, "Type here", "Search Fields", (value) {
+                setState(() {});
               }),
             ),
             Expanded(
               child: FutureBuilder<List<Note>?>(
-                future: DatabaseHelper().getAllNotes(),
+                future: DatabaseHelper().searchFilterWithMultipleItem(searchKeyword: searchNotesController.text),
                 builder: (context, AsyncSnapshot<List<Note>?> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -90,10 +54,8 @@ class _NotesScreenState extends State<NotesScreen> {
                   } else if (snapshot.hasData) {
                     if (snapshot.data != null) {
                       return ListView.builder(
-                        //itemCount: searchList.length,
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) => NoteWidget(
-                          //note: searchList[index],
                           note: snapshot.data![index],
                           onTap: () async {
                             await Navigator.push(
