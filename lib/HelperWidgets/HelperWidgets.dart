@@ -142,4 +142,24 @@ class HelperWidgets {
       ],
     );
   }
+
+  Widget drawerTiles({required IconData iconData, required String title, required VoidCallback onTap, bool isOffline = true}) {
+    return  ListTile(
+      leading: Icon(
+        iconData,
+        color: Colors.grey,
+        size: 24,
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'Adelle',
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: Colors.grey,
+        ),
+      ),
+      onTap: onTap,
+    ) ;
+  }
 }
