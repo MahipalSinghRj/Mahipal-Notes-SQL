@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:sql_notes/Debug/printme.dart';
 import 'package:sql_notes/screens/search_screen.dart';
 import '../Controllers/UserController.dart';
 import '../HelperWidgets/HelperWidgets.dart';
@@ -23,7 +20,8 @@ class _NotesScreenState extends State<NotesScreen> {
   final searchController = TextEditingController();
   List<Note> getAllNotes = [];
   List<Note> searchList = [];
-  UserDetailsController userDetailsController = Get.put(UserDetailsController());
+  UserDetailsController userDetailsController =
+      Get.put(UserDetailsController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -54,7 +52,10 @@ class _NotesScreenState extends State<NotesScreen> {
           actions: [
             GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (builder) => const SearchNotes()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => const SearchNotes()));
                 },
                 child: const Icon(Icons.search)),
             const SizedBox(width: 20)
@@ -64,7 +65,8 @@ class _NotesScreenState extends State<NotesScreen> {
         ///Floating button
         floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              await Navigator.push(context, MaterialPageRoute(builder: (context) => const NoteScreen()));
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const NoteScreen()));
               setState(() {});
             },
             child: const Icon(Icons.add)),
@@ -81,9 +83,8 @@ class _NotesScreenState extends State<NotesScreen> {
                     future: DatabaseHelper().getAllNotes(),
                     builder: (context, AsyncSnapshot<List<Note>?> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                            child: LoadingAnimationWidget.twistingDots(
-                                leftDotColor: const Color(0xFF1A1A3F), rightDotColor: const Color(0xFFEA3799), size: 40));
+                        return const Center(
+                            child: Center(child: CircularProgressIndicator()));
                       } else if (snapshot.hasError) {
                         return Center(child: Text(snapshot.error.toString()));
                       } else if (snapshot.hasData) {
@@ -94,7 +95,10 @@ class _NotesScreenState extends State<NotesScreen> {
                               note: snapshot.data![index],
                               onTap: () async {
                                 await Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => NoteScreen(note: snapshot.data![index])));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NoteScreen(
+                                            note: snapshot.data![index])));
                                 setState(() {});
                               },
                               onLongPress: () async {
@@ -103,7 +107,8 @@ class _NotesScreenState extends State<NotesScreen> {
                                     builder: (context) {
                                       return HelperWidgets().showDialogWidget(
                                           onPressFunction: () async {
-                                            await DatabaseHelper.deleteNote(snapshot.data![index]);
+                                            await DatabaseHelper.deleteNote(
+                                                snapshot.data![index]);
                                             Navigator.pop(context);
                                             setState(() {});
                                           },
