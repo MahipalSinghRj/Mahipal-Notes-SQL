@@ -40,6 +40,7 @@ dependencies:
   intl: ^0.17.0
   get: ^4.6.5
   get_storage: ^2.1.1
+  http: ^1.0.0
 
 dev_dependencies:
   flutter_test:
